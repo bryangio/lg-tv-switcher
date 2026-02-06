@@ -9,7 +9,8 @@ import argparse
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_FILE = os.path.join(SCRIPT_DIR, "config.json")
-DEFAULT_INPUT = "HDMI_2"
+FALLBACK_INPUT = "HDMI_2"
+HDMI_OPTIONS = ["HDMI_1", "HDMI_2", "HDMI_3", "HDMI_4"]
 TIMEOUT = 5
 PAIRING_TIMEOUT = 60
 
@@ -194,10 +195,21 @@ def run_setup(ip=None):
     client_key = register(ws, timeout=PAIRING_TIMEOUT)
     ws.close()
 
-    save_config({"tv_ip": ip, "client_key": client_key})
-    print("Paired successfully! Config saved.")
+    print("Paired successfully!")
+    print()
+    print("Which HDMI input to switch to by default?")
+    for i, opt in enumerate(HDMI_OPTIONS, 1):
+        print(f"  {i}) {opt}")
+    choice = input(f"Choose [1-{len(HDMI_OPTIONS)}] (default: 2): ").strip()
+    if choice in [str(i) for i in range(1, len(HDMI_OPTIONS) + 1)]:
+        default_input = HDMI_OPTIONS[int(choice) - 1]
+    else:
+        default_input = FALLBACK_INPUT
+
+    save_config({"tv_ip": ip, "client_key": client_key, "default_input": default_input})
+    print(f"Config saved. Default input: {default_input}")
     py = "python" if sys.platform == "win32" else "python3"
-    print(f"Run '{py} \"{os.path.abspath(__file__)}\"' to switch to {DEFAULT_INPUT}.")
+    print(f"Run '{py} \"{os.path.abspath(__file__)}\"' to switch to {default_input}.")
 
 
 def run_switch(input_id):
@@ -210,6 +222,8 @@ def run_switch(input_id):
 
     tv_ip = config["tv_ip"]
     client_key = config.get("client_key")
+    if not input_id:
+        input_id = config.get("default_input", FALLBACK_INPUT)
 
     ws = connect_to_tv(tv_ip)
     new_key = register(ws, client_key=client_key)
@@ -229,8 +243,8 @@ def main():
                         help="First-time setup: enter TV IP and pair")
     parser.add_argument("--ip", type=str,
                         help="TV IP address (for setup)")
-    parser.add_argument("--input", type=str, default=DEFAULT_INPUT,
-                        help=f"Input to switch to (default: {DEFAULT_INPUT})")
+    parser.add_argument("--input", type=str, default=None,
+                        help="Input to switch to (default: saved from setup)")
     args = parser.parse_args()
 
     if args.setup:
