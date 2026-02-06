@@ -10,10 +10,20 @@ Switch your LG WebOS TV's HDMI input from the command line. Designed for multi-c
 
 ## Setup
 
+### macOS / Linux
+
 ```bash
 git clone https://github.com/bryangio/lg-tv-switcher.git
 cd lg-tv-switcher
 bash setup.sh
+```
+
+### Windows
+
+```cmd
+git clone https://github.com/bryangio/lg-tv-switcher.git
+cd lg-tv-switcher
+setup.bat
 ```
 
 During setup you'll be prompted to:
@@ -27,7 +37,8 @@ This saves a `config.json` file locally with your TV's IP and pairing key.
 Switch to the default input (HDMI 2):
 
 ```bash
-python3 lg_switch.py
+python3 lg_switch.py        # macOS / Linux
+python lg_switch.py          # Windows
 ```
 
 Switch to a specific input:
@@ -43,9 +54,11 @@ Re-run setup (new TV IP or re-pair):
 python3 lg_switch.py --setup
 ```
 
-## macOS Shortcut
+## Desktop Shortcuts
 
-You can create a Shortcut in the macOS Shortcuts app for one-click switching:
+### macOS
+
+Create a Shortcut in the Shortcuts app for one-click switching:
 
 1. Open **Shortcuts.app**
 2. Create a new Shortcut
@@ -57,6 +70,18 @@ You can create a Shortcut in the macOS Shortcuts app for one-click switching:
 5. Right-click the shortcut > **Add to Dock**
 
 You can also trigger it from Spotlight by typing the shortcut name.
+
+### Windows
+
+Create a desktop shortcut:
+
+1. Right-click your Desktop > **New** > **Shortcut**
+2. Enter the target:
+   ```
+   python "C:\path\to\lg_switch.py"
+   ```
+3. Name it "Switch TV to PC"
+4. Double-click to switch inputs
 
 ## How It Works
 

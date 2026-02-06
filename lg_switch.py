@@ -196,7 +196,8 @@ def run_setup(ip=None):
 
     save_config({"tv_ip": ip, "client_key": client_key})
     print("Paired successfully! Config saved.")
-    print(f"Run 'python3 \"{os.path.abspath(__file__)}\"' to switch to {DEFAULT_INPUT}.")
+    py = "python" if sys.platform == "win32" else "python3"
+    print(f"Run '{py} \"{os.path.abspath(__file__)}\"' to switch to {DEFAULT_INPUT}.")
 
 
 def run_switch(input_id):
